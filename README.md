@@ -2,9 +2,7 @@
 
 ## Project Overview
 
-This project is developed as part of the IIT Madras BS Degree - Modern Application Development II course.
-
-The application allows Admin, Trek Staff and Trekkers to manage trekking activities through a role-based web application.
+A Trekking management system to keep track of all users , staff members , booking and trek details 
 
 ---
 
