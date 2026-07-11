@@ -3,6 +3,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_jwt_extended import create_access_token 
 from extensions import db
 from models import User 
+from datetime import datetime
 auth= Blueprint('auth', __name__)
 
 @auth.route('/register', methods=['POST'])
@@ -28,7 +29,7 @@ def login():
         return jsonify({'message':'Invalid Password '}), 401
     if user.status !='ACTIVE':
         return jsonify({"message": 'Account is not active'}), 403
-    access_token = create_access_token(identity=user.id)
+    access_token = create_access_token(identity=str(user.id))
     return jsonify(
         {
             'message': 'Login successful',

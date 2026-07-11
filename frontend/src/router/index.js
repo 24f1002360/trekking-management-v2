@@ -5,6 +5,10 @@ import Register from '../views/Register.vue'
 import AdminDashboard from '../views/AdminDashboard.vue'
 import StaffDashboard from '../views/StaffDashboard.vue'
 import TrekkerDashboard from '../views/TrekkerDashboard.vue'
+import ManageTreks from '../views/ManageTreks.vue'
+import ManageStaff from '../views/ManageStaff.vue'
+import ManageUsers from '../views/ManageUsers.vue'
+import ManageBookings from '../views/ManageBookings.vue'
 
 const routes = [
     {
@@ -18,6 +22,26 @@ const routes = [
     {
         path:'/admin' ,
         component:AdminDashboard,
+        meta:{role:'ADMIN'}
+    },
+    {
+        path:'/admin/treks' ,
+        component:ManageTreks,
+        meta:{role:'ADMIN'}
+    },
+    {
+        path:'/admin/staff' ,
+        component:ManageStaff,
+        meta:{role:'ADMIN'}
+    },
+    {
+        path:'/admin/users' ,
+        component:ManageUsers,
+        meta:{role:'ADMIN'}
+    },
+    {
+        path:'/admin/bookings' ,
+        component:ManageBookings,
         meta:{role:'ADMIN'}
     },
     {
