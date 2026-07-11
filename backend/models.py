@@ -6,7 +6,7 @@ class User(db.Model):
     name= db.Column(db.String(100), nullable=False)
     email= db.Column(db.String(120), unique=True , nullable=False, index=True )
     password= db.Column(db.String(255), nullable=False)
-    phone= db.Column(db.String(15), unique=True , nullable= True)
+    phone= db.Column(db.String(15) , nullable= True)
     role = db.Column(db.String(20), nullable= False, index= True )
     status = db.Column(db.String(20), nullable=False, default='ACTIVE', index=True)
     created_at= db.Column(db.DateTime, default=datetime.utcnow)

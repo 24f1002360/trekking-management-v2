@@ -9,6 +9,7 @@ import ManageTreks from '../views/ManageTreks.vue'
 import ManageStaff from '../views/ManageStaff.vue'
 import ManageUsers from '../views/ManageUsers.vue'
 import ManageBookings from '../views/ManageBookings.vue'
+import Participants from "../views/Participants.vue"
 
 const routes = [
     {
@@ -53,6 +54,11 @@ const routes = [
         path:'/trekker' ,
         component:TrekkerDashboard,
         meta:{role:'TREKKER'}
+    },
+    {
+        path: "/staff/participants/:id",
+        component: Participants,
+        meta:{role:'STAFF'}
     }
 
 ]

@@ -51,9 +51,13 @@ def add_staff():
         role='STAFF',
         status = data['status']
     )
-    existing_phone = User.query.filter_by(phone=data["phone"]).first()
+    existing_phone = User.query.filter_by(
+        phone=data["phone"],
+        role="STAFF").first()
     if existing_phone:
-        return jsonify({"message": "Phone already exists"}), 400
+        return jsonify({
+            "message": "Phone already exists for another staff"
+        }),400
     db.session.add(staff)
     db.session.commit()
     return jsonify({'message': 'Staff Added'}), 201
@@ -85,7 +89,21 @@ def update_staff(id):
     staff = User.query.get(id)
     if staff is None or staff.role != 'STAFF':
         return jsonify({'message': 'Staff not found'}), 404
+    
     data= request.get_json()
+    existing_phone = User.query.filter(
+        User.phone == data["phone"],
+        User.role == "STAFF",
+        User.id != id).first()
+    if existing_phone:
+        return jsonify({
+            "message":"Phone already exists for another staff"
+        }),400
+    existing_email = User.query.filter(User.email == data["email"],User.id != id).first()
+    if existing_email:
+        return jsonify({
+            "message": "Email already exists"
+        }),400
     staff.name = data['name']
     staff.email = data['email']
     staff.phone = data['phone']
@@ -194,18 +212,3 @@ def all_boookings():
 
 
 
-@admin.route('/admin/search', methods=['GET'])
-@jwt_required()
-def search():
-    admin = User.query.get(int(get_jwt_identity()))
-    if admin.role != 'ADMIN':
-        return jsonify({'message': 'Access Denied'}),403
-    keyword = request.args.get('keyword')
-    users = User.query.filter(User.role == 'TREKKER',(User.name.contains(keyword)) | (User.id == keyword)).all()
-    staff = User.query.filter(User.role == 'STAFF',(User.name.contains(keyword)) | (User.id == keyword)).all()
-    treks = Trek.query.filter((Trek.trek_name.contains(keyword))|(Trek.id == keyword)).all()
-    return jsonify({
-        'users':len(users),
-        'staff':len(staff),
-        'treks':len(treks)
-    }),200

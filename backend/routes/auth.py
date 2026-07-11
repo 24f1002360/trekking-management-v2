@@ -12,6 +12,11 @@ def register():
     existing_user= User.query.filter_by(email=data['email']).first()
     if existing_user:
         return jsonify({'message': 'Email already exists'}), 400
+    existing_phone = User.query.filter_by(phone=data["phone"],role="TREKKER").first()
+    if existing_phone:
+        return jsonify({
+            "message":"Phone already exists"
+        }),400
     new_user= User(name=data['name'], email=data['email'], password=generate_password_hash(data['password']), phone=data['phone'], role='TREKKER', status='ACTIVE')
     db.session.add(new_user)
     db.session.commit()
