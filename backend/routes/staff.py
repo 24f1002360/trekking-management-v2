@@ -88,7 +88,7 @@ def update_trek(id):
     trek.status = data["status"]
     if trek.status == "COMPLETED":
         bookings = Booking.query.filter_by(trek_id=trek.id).all()
-    for booking in bookings:
+        for booking in bookings:
             if booking.status == "BOOKED":
                 booking.status = "COMPLETED"
     db.session.commit()

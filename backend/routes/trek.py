@@ -89,6 +89,12 @@ def update_trek(id):
     trek_data.available_slots = data['available_slots']
     trek_data.assigned_staff_id = int(data['assigned_staff_id'])if data.get('assigned_staff_id') else None
     trek_data.status = data['status']
+    if trek_data.status == "COMPLETED":
+        bookings = Booking.query.filter_by(
+            trek_id=trek_data.id).all()
+        for booking in bookings:
+            if booking.status == "BOOKED":
+                booking.status = "COMPLETED"
     trek_data.start_date = datetime.strptime(data["start_date"], "%Y-%m-%d").date()
     trek_data.end_date = datetime.strptime(data["end_date"], "%Y-%m-%d").date()
     db.session.commit()

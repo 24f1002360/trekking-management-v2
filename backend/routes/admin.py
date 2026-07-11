@@ -22,7 +22,23 @@ def admin_dashboard():
             'total_treks':
                 Trek.query.count(),
             'total_bookings':
-                Booking.query.count()    
+                Booking.query.count(),    
+            'completed_treks':
+                Trek.query.filter_by(
+                    status='COMPLETED'
+                    ).count(),
+            'open_treks':
+                Trek.query.filter_by(
+                    status='OPEN'
+                    ).count(),
+            'ongoing_treks':
+                Trek.query.filter_by(
+                    status='ONGOING'
+                    ).count(),
+            'cancelled_bookings':
+                Booking.query.filter_by(
+                    status='CANCELLED'
+                    ).count()
         }
     ),200
     
@@ -203,9 +219,14 @@ def all_boookings():
             'booking_id':booking.id,
             'user_name':booking.user.name,
             'trek_name':booking.trek.trek_name,
-            'status':booking.status,
-            'booking_date':booking.booking_date.strftime("%Y-%m-%d %H:%M")
-    })
+            'booking_status':booking.status,
+            "trek_status":booking.trek.status,
+            'booking_date':booking.booking_date.strftime("%Y-%m-%d %H:%M"),
+            "completed_date":
+                str(booking.trek.end_date)
+                if booking.status=="COMPLETED"
+                else "-"
+        })
     return jsonify(result),200
 
 

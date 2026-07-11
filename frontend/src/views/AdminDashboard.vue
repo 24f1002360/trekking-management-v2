@@ -32,6 +32,45 @@
 </div>
 
 </div>
+<div class="row mt-4">
+
+<div class="col-md-3">
+<div class="card text-center">
+<div class="card-body">
+<h5>Open Treks</h5>
+<h2>{{ dashboard.open_treks }}</h2>
+</div>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="card text-center">
+<div class="card-body">
+<h5>Ongoing Treks</h5>
+<h2>{{ dashboard.ongoing_treks }}</h2>
+</div>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="card text-center">
+<div class="card-body">
+<h5>Completed Treks</h5>
+<h2>{{ dashboard.completed_treks }}</h2>
+</div>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="card text-center">
+<div class="card-body">
+<h5>Cancelled Bookings</h5>
+<h2>{{ dashboard.cancelled_bookings }}</h2>
+</div>
+</div>
+</div>
+
+</div>
 
 <hr>
 <div class='mt-4'>

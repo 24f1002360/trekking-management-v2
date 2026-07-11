@@ -10,8 +10,10 @@
 <th>ID </th >
 <th> User </th>
 <th> Trek </th >
-<th> Status </th>
-<th> Date </th>
+<th> Booking Status </th>
+<th> Trek Status </th>
+<th> Booking Date </th>
+<th> Completed Date </th>
 </tr>
 </thead>
 
@@ -20,8 +22,10 @@
 <td>{{ booking.booking_id }}</td>
 <td> {{ booking.user_name }}</td>
 <td> {{ booking.trek_name }}</td >
-<td> {{ booking.status }}</td>
+<td> {{ booking.booking_status }}</td>
+<td> {{ booking.trek_status }}</td>
 <td> {{ booking.booking_date }}</td>
+<td> {{ booking.completed_date }}</td>
 </tr>
 </tbody>
 </table>
