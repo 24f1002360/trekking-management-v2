@@ -47,7 +47,9 @@ const userList = ref([])
 const filteredUsers = computed(()=>{
 const keyword = search.value.toLowerCase()
 return userList.value.filter(user=>
-user.name.toLowerCase().includes(keyword) || user.email.toLowerCase().includes(keyword))
+user.name.toLowerCase().includes(keyword) ||
+user.email.toLowerCase().includes(keyword) ||
+(user.phone || "").toLowerCase().includes(keyword) )
 })
 async function loadUser(){
     const response=await fetch('http://127.0.0.1:5000/admin/users',

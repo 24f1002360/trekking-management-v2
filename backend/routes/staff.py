@@ -8,8 +8,11 @@ staff=Blueprint("staff", __name__)
 @staff.route('/staff/dashboard', methods=['GET'])
 @jwt_required()
 def staff_dashborad():
-    user_id = int(get_jwt_identity())
-    user= User.query.get(user_id)
+    user=User.query.get(int(get_jwt_identity()))
+    if user.status != "ACTIVE":
+        return jsonify({
+            "message": "Your account has been blacklisted. Contact Admin."
+        }),403
     if user.role != 'STAFF':
         return jsonify({'message': 'Access Denied'}), 403
     treks = Trek.query.filter_by(assigned_staff_id=user.id).all()
@@ -31,6 +34,10 @@ def staff_dashborad():
 @jwt_required()
 def assigned_treks():
     user=User.query.get(int(get_jwt_identity()))
+    if user.status != "ACTIVE":
+        return jsonify({
+            "message": "Your account has been blacklisted. Contact Admin."
+        }),403
     if user.role!='STAFF':
         return jsonify({'message': 'Access Denied'}),403
     treks=Trek.query.filter_by(assigned_staff_id=user.id).all()
@@ -56,6 +63,10 @@ def assigned_treks():
 @jwt_required()
 def update_trek(id):
     user=User.query.get(int(get_jwt_identity()))
+    if user.status != "ACTIVE":
+        return jsonify({
+            "message": "Your account has been blacklisted. Contact Admin."
+        }),403
     if user.role!='STAFF':
         return jsonify({'message': 'Access Denied'}), 403
     trek=Trek.query.get(id)
@@ -75,6 +86,11 @@ def update_trek(id):
         "message":"Invalid status"
         }),400
     trek.status = data["status"]
+    if trek.status == "COMPLETED":
+        bookings = Booking.query.filter_by(trek_id=trek.id).all()
+    for booking in bookings:
+            if booking.status == "BOOKED":
+                booking.status = "COMPLETED"
     db.session.commit()
     return jsonify({
         'message':'Trek Updated'
@@ -85,6 +101,10 @@ def update_trek(id):
 @jwt_required()
 def participants(id):
     user=User.query.get(int(get_jwt_identity()))
+    if user.status != "ACTIVE":
+        return jsonify({
+            "message": "Your account has been blacklisted. Contact Admin."
+        }),403
     if user.role !='STAFF':
         return jsonify({'message': 'Acess Denied'}),403
     trek=Trek.query.get(id)
@@ -109,6 +129,10 @@ def participants(id):
 @jwt_required()
 def trek_details(id):
     user=User.query.get(int(get_jwt_identity()))
+    if user.status != "ACTIVE":
+        return jsonify({
+            "message": "Your account has been blacklisted. Contact Admin."
+        }),403
     if user.role!= 'STAFF':
         return jsonify({'message':'Access Denied'}),403
     trek=Trek.query.get(id)

@@ -60,7 +60,9 @@ const filteredParticipants = computed(()=>{
     return participants.value.filter(
         p =>
         p.user_name.toLowerCase().includes(keyword) ||
-        p.email.toLowerCase().includes(keyword))
+        p.email.toLowerCase().includes(keyword) ||
+        (p.phone || "").toLowerCase().includes(keyword)
+        )
 })
 
 onMounted(loadParticipants)

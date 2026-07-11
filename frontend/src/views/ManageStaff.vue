@@ -123,7 +123,8 @@ const filteredStaff = computed(()=>{
     return staffList.value.filter(
         staff =>
         staff.name.toLowerCase().includes(keyword) ||
-        staff.email.toLowerCase().includes(keyword)
+        staff.email.toLowerCase().includes(keyword) ||
+        (staff.phone || "").toLowerCase().includes(keyword)
         )
 })
 
