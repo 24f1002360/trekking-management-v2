@@ -16,3 +16,6 @@ class Config:
     MAIL_PASSWORD = "rmtbjikchiexvtpz"
     MAIL_DEFAULT_SENDER = "dalalgaurav554@gmail.com"
     EXPORT_FOLDER = os.path.join(BASE_DIR, 'exports')
+    CACHE_TYPE = "RedisCache"
+    CACHE_REDIS_URL = REDIS_URL
+    CACHE_DEFAULT_TIMEOUT = 300

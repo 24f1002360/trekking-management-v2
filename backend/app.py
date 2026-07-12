@@ -8,6 +8,7 @@ from routes.admin import admin
 from routes.staff import staff
 from routes.trekker import trekker
 from routes.trek import trek 
+from extensions import db,jwt,mail,cache
 
 app=Flask(__name__)
 CORS(app)
@@ -16,6 +17,7 @@ app.config.from_object(Config)
 db.init_app(app)
 jwt.init_app(app)
 mail.init_app(app)
+cache.init_app(app)
 @jwt.invalid_token_loader
 def invalid_token_callback(error):
     print("INVALID TOKEN:", error)

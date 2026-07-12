@@ -2,6 +2,7 @@ from flask import Blueprint, jsonify , request
 from flask_jwt_extended import jwt_required, get_jwt_identity 
 from models import User, Trek, Booking
 from extensions import db
+from extensions import cache
 
 trekker= Blueprint('trekker', __name__)
 
@@ -25,6 +26,7 @@ def trekker_dashboard():
     
 @trekker.route("/trekker/treks", methods=["GET"])
 @jwt_required()
+@cache.cached(timeout=300)
 def available_treks():
     user = User.query.get(int(get_jwt_identity()))
     if user.status != "ACTIVE":
@@ -52,6 +54,7 @@ def available_treks():
 
 @trekker.route('/trekker/treks/<int:id>', methods=['GET'])
 @jwt_required()
+@cache.cached(timeout=300)
 def trek_details(id):
     user = User.query.get(int(get_jwt_identity()))
     if user.status != 'ACTIVE':
@@ -71,6 +74,7 @@ def trek_details(id):
         'id':trek.id,
         'trek_name' :trek.trek_name,
         'location' :trek.location,
+        'staff_name' : trek.staff.name if trek.staff else 'Not Assigned',
         'difficulty': trek.difficulty,
         'duration':trek.duration,
         'description':trek.description,

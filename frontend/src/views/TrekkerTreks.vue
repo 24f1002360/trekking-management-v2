@@ -74,6 +74,11 @@ class='card mt-4' >
 </p>
 
 <p>
+<b>Assigned Staff :</b>
+{{ selectedTrek.staff_name }}
+</p>
+
+<p>
 <b>Difficulty :</b>
 {{ selectedTrek.difficulty }}
 </p>

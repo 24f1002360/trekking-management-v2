@@ -3,6 +3,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from models import User, Trek, Booking
 from extensions import db 
 from datetime import datetime
+from extensions import cache
 
 trek = Blueprint('trek', __name__)
 @trek.route('/treks', methods=['POST'])
@@ -54,6 +55,7 @@ def create_trek():
         )
     db.session.add(new_trek)
     db.session.commit()
+    cache.clear()
     return jsonify({'message': 'Trek Created'}), 201
     
     
@@ -129,6 +131,7 @@ def update_trek(id):
     trek_data.start_date = new_start
     trek_data.end_date = new_end
     db.session.commit()
+    cache.clear()
     return jsonify({'message': 'Trek Updated'}), 200
 
 
@@ -148,4 +151,5 @@ def delete_trek(id):
         return jsonify({'message': 'Trek not found'}), 404
     db.session.delete(trek_data)
     db.session.commit()
+    cache.clear()
     return jsonify({'message': 'Trek Deleted'}), 200
