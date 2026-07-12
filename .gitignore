@@ -1,6 +1,7 @@
 
 __pycache__/
 *.py[cod]
+*.pyo
 *.egg-info/
 .env
 venv/
@@ -25,3 +26,6 @@ frontend/dist/
 
 node_modules/
 frontend/node_modules/
+exports/
+celerybeat-schedule
+.pytest_cache/

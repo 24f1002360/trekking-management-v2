@@ -2,6 +2,7 @@ from flask import Blueprint, jsonify , request
 from flask_jwt_extended import jwt_required, get_jwt_identity 
 from models import User, Trek, Booking
 from extensions import db
+
 trekker= Blueprint('trekker', __name__)
 
 
@@ -251,4 +252,16 @@ def update_profile():
     db.session.commit()
     return jsonify({
         "message": "Profile Updated"
-    }), 200
+    }), 200 
+    
+    
+    
+@trekker.route('/trekker/export-history', methods=['POST'])
+@jwt_required()
+def export_history():
+    from tasks.tasks import export_trekking_history
+    user_id = int(get_jwt_identity())
+    export_trekking_history.delay(user_id)
+    return {
+        'message': 'CSV export started. Check your email shortly.'
+    }, 202

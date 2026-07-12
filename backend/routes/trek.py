@@ -12,11 +12,29 @@ def create_trek():
     if admin.role!= 'ADMIN':
         return jsonify({'message': 'Access Denied'}), 403
     data = request.get_json()
-    start_date = datetime.strptime(data["start_date"], "%Y-%m-%d").date()
-    end_date = datetime.strptime(data["end_date"], "%Y-%m-%d").date()
-    existing = Trek.query.filter_by(
+    staff_id = int(data["assigned_staff_id"]) if data.get("assigned_staff_id") else None
+    start_date = datetime.strptime(
+        data["start_date"],
+        "%Y-%m-%d"
+    ).date()
+    end_date = datetime.strptime(
+        data["end_date"],
+        "%Y-%m-%d"
+    ).date()
+    if staff_id:
+        existing_staff = Trek.query.filter(
+            Trek.assigned_staff_id == staff_id,
+            Trek.start_date <= end_date,
+            Trek.end_date >= start_date,
+            Trek.status.in_(["OPEN", "ONGOING", "APPROVED"])
+        ).first()
+        if existing_staff:
+            return jsonify({
+                "message": "Staff is already assigned to another trek during these dates."
+            }), 400
+    existing_trek = Trek.query.filter_by(
     trek_name=data['trek_name']).first()
-    if existing:
+    if existing_trek:
         return jsonify({
         "message":"Trek already exists"
     }),400
@@ -28,9 +46,7 @@ def create_trek():
         description=data['description'],
         total_slots= data['total_slots'],
         available_slots = data['total_slots'],
-        assigned_staff_id = (int(data["assigned_staff_id"])
-                             if data.get("assigned_staff_id")
-                             else None),
+        assigned_staff_id = staff_id,
         status= data['status'],
         start_date = start_date,
         end_date = end_date
@@ -87,7 +103,22 @@ def update_trek(id):
     trek_data.description = data['description']
     trek_data.total_slots = data['total_slots']
     trek_data.available_slots = data['available_slots']
-    trek_data.assigned_staff_id = int(data['assigned_staff_id'])if data.get('assigned_staff_id') else None
+    staff_id = int(data["assigned_staff_id"]) if data.get("assigned_staff_id") else None
+    new_start = datetime.strptime(data["start_date"], "%Y-%m-%d").date()
+    new_end = datetime.strptime(data["end_date"], "%Y-%m-%d").date()
+    if staff_id:
+        existing = Trek.query.filter(
+            Trek.assigned_staff_id == staff_id,
+            Trek.id != trek_data.id,
+            Trek.start_date <= new_end,
+            Trek.end_date >= new_start,
+            Trek.status.in_(["OPEN", "ONGOING", "APPROVED"])
+        ).first()
+        if existing:
+            return jsonify({
+                "message": "Staff already assigned to another trek during these dates."
+            }), 400
+    trek_data.assigned_staff_id = staff_id
     trek_data.status = data['status']
     if trek_data.status == "COMPLETED":
         bookings = Booking.query.filter_by(
@@ -95,8 +126,8 @@ def update_trek(id):
         for booking in bookings:
             if booking.status == "BOOKED":
                 booking.status = "COMPLETED"
-    trek_data.start_date = datetime.strptime(data["start_date"], "%Y-%m-%d").date()
-    trek_data.end_date = datetime.strptime(data["end_date"], "%Y-%m-%d").date()
+    trek_data.start_date = new_start
+    trek_data.end_date = new_end
     db.session.commit()
     return jsonify({'message': 'Trek Updated'}), 200
 

@@ -8,7 +8,7 @@ with app.app_context():
     admin = User.query.filter_by(role="ADMIN").first()
     if admin is None:
         admin = User( name="Admin",
-            email='admin@trek.com',
+            email='admintrek8810@gmail.com',
             password=generate_password_hash('admin8810'),
             role="ADMIN",
             status="ACTIVE"

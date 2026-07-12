@@ -1,7 +1,7 @@
 from flask import Flask 
 from flask_cors import CORS
 from config import Config
-from extensions import db, jwt 
+from extensions import db, jwt , mail
 from models import *
 from routes.auth import auth
 from routes.admin import admin
@@ -15,6 +15,7 @@ app.config.from_object(Config)
 
 db.init_app(app)
 jwt.init_app(app)
+mail.init_app(app)
 @jwt.invalid_token_loader
 def invalid_token_callback(error):
     print("INVALID TOKEN:", error)

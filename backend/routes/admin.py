@@ -157,10 +157,17 @@ def assign_staff(id):
     staff = User.query.get(data['staff_id'])
     if staff is None or staff.role != 'STAFF':
         return jsonify({'message': 'Staff not found'}), 404
-    assigned = Trek.query.filter_by(assigned_staff_id=staff.id).all()
-    for t in assigned:
-        if trek.start_date <= t.end_date and trek.end_date >= t.start_date:
-            return jsonify({'message': 'Staff Already Assigned During This Dates'}), 400
+    existing = Trek.query.filter(
+        Trek.assigned_staff_id == data["staff_id"],
+        Trek.id != trek.id,
+        Trek.start_date <= trek.end_date,
+        Trek.end_date >= trek.start_date,
+        Trek.status.in_(["APPROVED", "OPEN", "ONGOING"])
+    ).first()
+    if existing:
+        return jsonify({
+            "message":"Staff is already assigned to another trek during these dates."
+        }),400
     trek.assigned_staff_id = staff.id 
     db.session.commit()
     return jsonify({'message': 'Staff Assigned Successfully'}), 200

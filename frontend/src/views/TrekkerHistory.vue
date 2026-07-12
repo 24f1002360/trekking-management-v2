@@ -4,6 +4,7 @@
 
 <button class='btn btn-primary mb-3' @click="loadHistory"> Refresh </button>
 <RouterLink to='/trekker' class='btn btn-secondary mb-3 ms-2'> Back </RouterLink>
+<button class='btn btn-success mb-3 ms-2' @click='exportHistory'> Export CSV </button>
 
 <table class='table table-bordered'>
 <thead>
@@ -49,6 +50,22 @@ async function loadHistory(){
         return
         }
     history.value=data
+}
+
+async function exportHistory(){
+    const response = await fetch(
+        'http://127.0.0.1:5000/trekker/export-history' ,
+        {
+            method:'POST',
+            headers:{
+                Authorization:
+                "Bearer "+ 
+                localStorage.getItem('token')
+            }
+        }
+    )
+    const data = await response.json()
+    alert(data.message)
 }
 
 onMounted(loadHistory)
