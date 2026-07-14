@@ -1,7 +1,7 @@
 <template>
 <div class='container mt-4'>
 <h2> Manage Trekker</h2>
-<button class="btn btn-primary mb-3" @click="loadUsers"> Refresh </button>
+<button class="btn btn-primary mb-3" @click="loadUser"> Refresh </button>
 <RouterLink to="/admin" class="btn btn-secondary mb-3 ms-2"> Back </RouterLink>
 
 <div class="row mb-3">
@@ -30,7 +30,7 @@
 <td> {{ user.phone }}</td>
 <td> {{ user.status }}</td>
 <td> 
-<button class='btn btn-danger btn-sm' @click='chnageStatus(user)' >
+<button class='btn btn-danger btn-sm' @click='changeStatus(user)' >
 {{ user.status=="ACTIVE" ? "Blacklist" : "Activate" }}
 </button>
 </td>
@@ -55,6 +55,31 @@ async function loadUser(){
     const response=await fetch('http://127.0.0.1:5000/admin/users',
     {headers:{Authorization:'Bearer '+localStorage.getItem('token')}})
     userList.value = await response.json()
+}
+async function changeStatus(user) {
+    const newStatus =
+        user.status === "ACTIVE"
+            ? "BLACKLISTED"
+            : "ACTIVE"
+    const response = await fetch(
+        "http://127.0.0.1:5000/admin/users/" + user.id + "/status",
+        {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization:
+                    "Bearer " + localStorage.getItem("token")
+            },
+            body: JSON.stringify({
+                status: newStatus
+            })
+        }
+    )
+    const data = await response.json()
+    alert(data.message)
+    if (response.ok) {
+        loadUser()
+    }
 }
 onMounted(loadUser)
 </script>

@@ -179,17 +179,10 @@ async function saveTrek() {
     })
 
     const data = await response.json()
-
-    if (!response.ok) {
-        alert(data.message)
-        return
-    }
-
     alert(data.message)
-
-    cancel()
-
-    loadTreks()
+    if (response.ok) {
+       cancel()
+       loadTreks()}
 }
 
 function editTrek(trek){
@@ -197,16 +190,23 @@ function editTrek(trek){
     editMode.value=true
     showAddForm.value=true
 }
-async function deleteTrek(id){
-    if(!confirm('Delete Trek')) return
-    await fetch('http://127.0.0.1:5000/treks/'+id,
-    {method:'DELETE',
-    headers:{
-        Authorization:
-        'Bearer '+localStorage.getItem('token')
-    }})
-    alert('Trek Deleted Successfully')
-    loadTreks()
+async function deleteTrek(id) {
+    if (!confirm("Delete Trek?")) return
+    const response = await fetch(
+        "http://127.0.0.1:5000/treks/" + id,
+        {
+            method: "DELETE",
+            headers: {
+                Authorization:
+                    "Bearer " + localStorage.getItem("token")
+            }
+        }
+    )
+    const data = await response.json()
+    alert(data.message)
+    if (response.ok) {
+        loadTreks()
+    }
 }
 function cancel(){
     editMode.value=false

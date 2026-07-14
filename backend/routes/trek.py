@@ -140,16 +140,17 @@ def update_trek(id):
 @jwt_required()
 def delete_trek(id):
     admin = User.query.get(int(get_jwt_identity()))
-    if admin.role != 'ADMIN':
-        return jsonify({'message': 'Access Denied'}), 403
+    if admin.role != "ADMIN":
+        return jsonify({"message": "Access Denied"}), 403
     trek_data = Trek.query.get(id)
-    if trek_data.bookings:
+    if trek_data is None:
+        return jsonify({"message": "Trek not found"}), 404
+    if Booking.query.filter_by(trek_id=id).count() > 0:
         return jsonify({
-        'message':'Cannot delete trek because bookings exist'
-    }),400
-    if trek_data is None :
-        return jsonify({'message': 'Trek not found'}), 404
+            "message": "Cannot delete trek because bookings already exist."
+        }), 400
     db.session.delete(trek_data)
     db.session.commit()
-    cache.clear()
-    return jsonify({'message': 'Trek Deleted'}), 200
+    return jsonify({
+        "message": "Trek Deleted Successfully"
+    }), 200
